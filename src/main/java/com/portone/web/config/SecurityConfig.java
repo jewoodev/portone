@@ -48,11 +48,12 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequest) ->
                         authorizeRequest
-                                .requestMatchers("/", "/signup", "/login", "/error/**",
-                                        "/bootstrap.min.css", "/style.css").permitAll()
-                                .requestMatchers("/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
-                                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                                .anyRequest().authenticated()
+//                                .requestMatchers("/", "/signup", "/login", "/error/**",
+//                                        "/bootstrap.min.css", "/style.css").permitAll()
+//                                .requestMatchers("/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+//                                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+//                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .formLogin(login -> login
                         .loginPage("/login")

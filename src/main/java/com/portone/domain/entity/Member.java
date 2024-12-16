@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Member {
     @Id @Column(name = "member_id")
-    private String id;
+    private String uid;
 
     @Column(unique = true)
     private String username;

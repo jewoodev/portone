@@ -8,12 +8,10 @@ import com.portone.web.controller.validator.SignUpValidator;
 import com.portone.web.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,7 +47,7 @@ public class MemberController {
 
         String encodedPwd = passwordEncoder.encode(signupDto.getPassword1());
         Member member = Member.builder()
-                .id(UUID.randomUUID().toString())
+                .uid(UUID.randomUUID().toString())
                 .username(signupDto.getUsername())
                 .password(encodedPwd)
                 .role(Role.USER)
