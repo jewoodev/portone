@@ -7,24 +7,28 @@
     <header th:replace="~{fragments/navigator :: navigator}" />
 
     <h2>결제하기</h2>
+    <form th:action th:object="${paymentDto}" method="post">
+        <div th:if="${errorMessage}">
+            <p class="field-error" th:text="${errorMessage}">오류 메세지(없는 결제)</p>
+        </div>
 
-    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-    <script>(function(){
-            const IMP = window.IMP;
-            const code = "iamport";
-            IMP.init(code);
+        <div class="form-group">
+            <label th:for="name" class="form-label">Name</label>
+            <input type="text" th:field="*{name}" class="form-control"
+                   placeholder="주문 이름을 입력하세요" required>
+        </div>
+        <div class="form-group">
+            <label th:for="amount" class="form-label">Amount</label>
+            <input type="text" th:field="*{amount}" class="form-control"
+                   placeholder="금액을 입력하세요" required>
+        </div>
 
-            const merchant_uid = "merchant_" + new Date().getTime();
-
-            IMP.request_pay({
-                merchant_uid: merchant_uid,
-                name: "주문 테스트",
-                amount: 100,
-            }, function(response) {
-                console.log(response);
-            });
-        })();
-    </script>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary btn-sm" type="submit">제출</button>
+            </div>
+        </div>
+    </form>
 
     <div th:replace="~{fragments/footer :: footer}" />
 </div> <!-- /container -->
