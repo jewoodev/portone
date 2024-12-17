@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portone.domain.common.PaymentStatus;
 import com.portone.domain.dto.PaymentDto;
 import com.portone.domain.entity.Payment;
+import com.portone.web.client.PortoneClient;
 import com.portone.web.service.PaymentService;
+import com.portone.web.service.PortoneService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,13 @@ import java.util.UUID;
 @Controller
 public class PaymentController {
     private final PaymentService paymentService;
+    private final PortoneService portoneService;
+
+    @Value("${portone.pg.provider}")
+    private String portonePgProvider;
+
+    @Value("${portone.shop.id}")
+    private String portoneShopId;
 
     @GetMapping("/payment")
     public String paymentForm(Model model) {
@@ -54,21 +64,35 @@ public class PaymentController {
             paymentProps.put("merchant_uid", payment.getUid());
             paymentProps.put("name", payment.getName());
             paymentProps.put("amount", String.valueOf(payment.getAmount()));
+            paymentProps.put("pg", portonePgProvider);
             payProps = new ObjectMapper().writeValueAsString(paymentProps);
         } catch (NoSuchElementException e) {
-            model.addAttribute("errorMessage", "어떤 걸 주문할 것인지 선택하시지 않았습니다. 선택 후에 결제해주세요.");
+            model.addAttribute("errorMessage", e.getMessage());
             return "payment/paymentForm";
         } catch (JsonProcessingException e) {
             model.addAttribute("errorMessage", "서버 내부적으로 문제가 발생했습니다. 잠시 후에 시도해주세요.");
             return "payment/paymentForm";
         }
         model.addAttribute("payProps", payProps);
-        model.addAttribute("verifyPage", "/payment/" + uid + "/check");
+        model.addAttribute("verifyUrl", "/payment/" + uid + "/check"); // 결제 검증 API URL
+        model.addAttribute("portoneShopId", portoneShopId); // 가맹점 아이디
         return "payment/paymentPay";
     }
 
-    @GetMapping("/payment/{uid}/check")
+    @PatchMapping("/payment/{uid}/check")
     public String paymentCheck(@PathVariable String uid, Model model) {
-        return "";
+        try {
+            portoneService.checkPayment(uid);
+        } catch (NoSuchElementException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/payment/" + uid + "/detail";
+    }
+
+    @GetMapping("/payment/{uid}/detail")
+    public String paymentDetail(@PathVariable String uid, Model model) {
+        Payment payment = paymentService.findByUid(uid);
+        model.addAttribute("payment", payment);
+        return "payment/paymentDetail";
     }
 }

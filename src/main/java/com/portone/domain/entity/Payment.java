@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Map;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -36,5 +38,13 @@ public class Payment {
                 .name(this.name)
                 .amount(String.valueOf(this.amount))
                 .build();
+    }
+
+    /* 결제 검증 메서드 */
+    public void check(Map<String, Object> paymentData) {
+        Map<String, Object> response = (Map<String, Object>) paymentData.get("response");
+        this.status = PaymentStatus.valueOf(response.get("status").toString().toUpperCase());
+        this.isPaidOk = this.status.equals(PaymentStatus.PAID)
+                && (Integer) response.get("amount") == this.amount;
     }
 }
