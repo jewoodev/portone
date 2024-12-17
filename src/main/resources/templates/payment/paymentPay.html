@@ -8,27 +8,48 @@
 
     <h2>결제 테스트</h2>
 
-    <!-- 결제 프로퍼티 역직렬화 -->
-    <script th:inline="javascript">
-        let props = /*[[${payProps}]]*/
-        props = JSON.parse(props);
-    </script>
+    <meta name="_csrf" th:content="${_csrf.token}"/> <!-- CSRF 토큰 -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 -->
 
-    <!-- 결제 검증 페이지 선언 -->
     <script th:inline="javascript">
-        const verifyUrl = /*[[${verifyPage}]]*/
+        let props = /*[[${payProps}]]*/;
+        props = JSON.parse(props);
+
+        const verifyUrl = /*[[${verifyUrl}]]*/;
+        const detailUrl = /*[[${detailUrl}]]*/;
+        const portoneShopId = /*[[${portoneShopId}]]*/;
     </script>
 
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script>(function(){
             const IMP = window.IMP;
-            const code = "iamport";
+            const code = portoneShopId;
             IMP.init(code);
 
             const merchant_uid = "merchant_" + new Date().getTime();
 
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
             IMP.request_pay(props, function(response) {
-                location.href = verifyUrl;
+                console.log(response)
+                if (response.success) {
+                    console.log("response is success");
+                    fetch(verifyUrl, {
+                        method: 'PATCH',
+                        headers: {
+                        [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                        'Content-Type': 'application/json'
+                        },
+                        body: ""
+                    })
+                    .catch(error => {
+                        console.error("Fetch Error:", error);
+                        alert("서버 통신 중 문제가 발생했습니다.");
+                    });
+                } else {
+                    alert("결제가 실패했습니다. 다시 시도해주세요.");
+                }
             });
         })();
     </script>
