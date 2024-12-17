@@ -8,6 +8,17 @@
 
     <h2>결제 테스트</h2>
 
+    <!-- 결제 프로퍼티 역직렬화 -->
+    <script th:inline="javascript">
+        let props = /*[[${payProps}]]*/
+        props = JSON.parse(props);
+    </script>
+
+    <!-- 결제 검증 페이지 선언 -->
+    <script th:inline="javascript">
+        const verifyUrl = /*[[${verifyPage}]]*/
+    </script>
+
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script>(function(){
             const IMP = window.IMP;
@@ -16,12 +27,8 @@
 
             const merchant_uid = "merchant_" + new Date().getTime();
 
-            IMP.request_pay({
-                merchant_uid: merchant_uid,
-                name: "주문 테스트",
-                amount: 100,
-            }, function(response) {
-                console.log(response);
+            IMP.request_pay(props, function(response) {
+                location.href = verifyUrl;
             });
         })();
     </script>
