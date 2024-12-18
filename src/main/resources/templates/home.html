@@ -8,6 +8,9 @@
 
         <a href="/payment">새 결제 만들기</a>
 
+        <meta name="_csrf" th:content="${_csrf.token}" />
+        <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
         <div class="row">
             <div th:each="product : ${productList}" class="col-sm-6 col-lg-4">
                 <div class="card">
@@ -24,7 +27,11 @@
                         <div class="d-flex justify-content-between">
                             <div th:text="${product.getPrice()} + 원"></div>
                             <div>
-                                <a href="" class="btn btn-primary">장바구니에 담기</a>
+                                <a href="#" class="btn btn-primary" th:data-product-name="${product.getName()}" onclick="addToCart(event)">장바구니에 담기</a>
+                                <form id="addToCartForm" th:action="@{/api/cart/add}" method="POST" style="display: none;">
+                                    <input type="hidden" name="productName" th:value="${product.getName()}"/>
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                                </form>
                             </div>
                         </div>
 <!--                        <div th:text="${product.getStatus()}"></div>-->
@@ -85,3 +92,39 @@
     </div> <!-- /container -->
 </body>
 </html>
+
+<script>
+    function addToCart(event) {
+        event.preventDefault(); // 링크 클릭의 기본 동작 방지
+
+        // 클릭된 요소에서 data-product-name 값 가져오기
+        const productName = event.currentTarget.getAttribute("data-product-name");
+
+        // JSON 형식으로 데이터 준비
+        const jsonData = { productName: productName };
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch("/api/cart/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken // CSRF 토큰 추가
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert("장바구니에 성공적으로 담겼습니다!");
+            } else {
+                alert("오류: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("오류 발생:", error);
+            alert("네트워크 오류가 발생했습니다.");
+        });
+    }
+</script>

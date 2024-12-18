@@ -3,8 +3,10 @@ package com.portone.web.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portone.domain.common.ProductStatus;
+import com.portone.domain.entity.CartProduct;
 import com.portone.domain.entity.Category;
 import com.portone.domain.entity.Product;
+import com.portone.domain.repository.CartProductRepository;
 import com.portone.domain.repository.CategoryRepository;
 import com.portone.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +19,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartProductRepository cartProductRepository;
+
     private final String staticDir = "src/main/resources/static/product/";
 
     @Transactional
@@ -77,11 +80,44 @@ public class ProductService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<Product> findAll(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Product> searchProductByName(String name, Pageable pageable) {
         return productRepository.findByNameContaining(name, pageable);
+    }
+
+    @Transactional
+    public String addToCart(String memberUid, String productName) {
+        // 상품 검증
+        productRepository.findByName(productName).orElseThrow(() -> new NoSuchElementException("존재하지 않는 옷입니다."));
+
+        Optional<CartProduct> opCartProduct = cartProductRepository.findByMemberUidAndProductName(memberUid, productName);
+        String cartProductUid;
+        if (opCartProduct.isEmpty()) {
+            CartProduct cartProduct = CartProduct.builder()
+                    .uid(UUID.randomUUID().toString())
+                    .productName(productName)
+                    .memberUid(memberUid)
+                    .quantity(1)
+                    .build();
+
+            cartProductUid = cartProductRepository.save(cartProduct).getUid();
+        }
+        else {
+            CartProduct cartProduct = opCartProduct.get();
+            cartProduct.increaseQuantity();
+            cartProductUid = cartProduct.getUid();
+        }
+
+        return cartProductUid;
+    }
+
+    @Transactional(readOnly = true)
+    public CartProduct findCartProduct(String cartProductUid) {
+        return cartProductRepository.findByUid(cartProductUid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 장바구니를 요청하셨습니다."));
     }
 }
