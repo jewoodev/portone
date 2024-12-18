@@ -38,12 +38,16 @@
             <ul class="pagination">
                 <!-- Previous 버튼 -->
                 <li th:if="${productList.hasPrevious()}" class="page-item">
-                    <a th:href="@{'/?page=' + ${productList.number - 1} + '&size=' + ${productList.size} + '&query=' + ${query}}" class="page-link">&laquo;</a>
+                    <a th:href="@{${query != null ?
+                    '/?page=' + (productList.number - 1) + '&size=' + productList.size + '&query=' + query :
+                    '/?page=' + (productList.number - 1) + '&size=' + productList.size}}" class="page-link">&laquo;</a>
                 </li>
 
                 <!-- 처음 페이지 -->
                 <li th:if="${startPage > 0}" class="page-item">
-                    <a th:href="@{'/?page=0&size=' + ${productList.size} + '&query=' + ${query}}" class="page-link">1</a>
+                    <a th:href="@{${query != null ?
+                    '/?page=0&size=' + productList.size + '&query=' + query :
+                    '/?page=0&size=' + productList.size}}" class="page-link">1</a>
                 </li>
                 <li th:if="${startPage > 1}" class="page-item disabled">
                     <span class="page-link">...</span>
@@ -53,7 +57,9 @@
                 <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
                     class="page-item"
                     th:classappend="${i == currentPage} ? 'active'" th:if="${endPage > 0}">
-                    <a th:href="@{'/?page=' + ${i} + '&size=' + ${productList.size} + '&query=' + ${query}}" class="page-link" th:text="${i + 1}"></a>
+                    <a th:href="@{${query != null ?
+                    '/?page=' + i + '&size=' + productList.size + '&query=' + query :
+                    '/?page=' + i + '&size=' + productList.size}}" class="page-link" th:text="${i + 1}"></a>
                 </li>
 
                 <!-- 마지막 페이지 -->
@@ -61,12 +67,16 @@
                     <span class="page-link">...</span>
                 </li>
                 <li th:if="${endPage < productList.totalPages - 1}" class="page-item">
-                    <a th:href="@{'/?page=' + ${productList.totalPages - 1} + '&size=' + ${productList.size} + '&query=' + ${query}}" class="page-link" th:text="${productList.totalPages}"></a>
+                    <a th:href="@{${query != null ?
+                    '/?page=' + (productList.totalPages - 1) + '&size=' + productList.size + '&query=' + query :
+                    '/?page=' + (productList.totalPages - 1) + '&size=' + productList.size}}" class="page-link" th:text="${productList.totalPages}"></a>
                 </li>
 
                 <!-- Next 버튼 -->
                 <li th:if="${productList.hasNext()}" class="page-item">
-                    <a th:href="@{'/?page=' + ${productList.number + 1} + '&size=' + ${productList.size} + '&query=' + ${query}}" class="page-link">&raquo;</a>
+                    <a th:href="@{${query != null ?
+                    '/?page=' + (productList.number + 1) + '&size=' + productList.size + '&query=' + query :
+                    '/?page=' + (productList.number + 1) + '&size=' + productList.size}}" class="page-link">&raquo;</a>
                 </li>
             </ul>
         </div>
