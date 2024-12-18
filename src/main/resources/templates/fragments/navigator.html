@@ -1,27 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<header th:fragment="navigator" class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-    <a href="/"
-       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-        <span class="fs-4">포트원 쇼핑몰</span>
-    </a>
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">Home</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">Features</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">Pricing</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">FAQs</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">About</a>
-        </li>
-    </ul>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header th:fragment="navigator" class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
+                <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="" method="GET">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="query" th:value="${query}">
+            </form>
+
+            <div class="dropdown text-end" sec:authorize="!isAuthenticated()">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item" th:href="@{/signup}">회원가입</a></li>
+                    <li><a class="dropdown-item" th:href="@{/login}">로그인</a></li>
+                </ul>
+            </div>
+
+            <div class="dropdown text-end" sec:authorize="isAuthenticated()">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <form th:action="@{logout}" method="post" style="display: none;" id="logoutForm">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                    </form>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </header>
-
-

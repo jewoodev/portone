@@ -25,9 +25,17 @@ public class ProductController {
     @GetMapping("/")
     public String main(
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String query,
             Model model) {
         Pageable pageable = PageRequest.of(page, 9);
-        Page<Product> productList = productService.findAll(pageable);
+        Page<Product> productList;
+
+        // 검색어 처리
+        if (query == null)
+            productList = productService.findAll(pageable);
+        else
+            productList = productService.searchProductByName(query, pageable);
+
         int totalPages = productList.getTotalPages();
         int currentPage = productList.getNumber();
         int pageRange = 5; // 현재 페이지 기준 앞 뒤로 표시할 페이지 개수
@@ -43,6 +51,7 @@ public class ProductController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("query", query);
         return "home";
     }
 
