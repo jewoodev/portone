@@ -28,7 +28,7 @@ public class Payment {
     private int amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private PaymentStatus paymentStatus;
 
     private boolean isPaidOk;
 
@@ -43,8 +43,8 @@ public class Payment {
     /* 결제 검증 메서드 */
     public void check(Map<String, Object> paymentData) {
         Map<String, Object> response = (Map<String, Object>) paymentData.get("response");
-        this.status = PaymentStatus.valueOf(response.get("status").toString().toUpperCase());
-        this.isPaidOk = this.status.equals(PaymentStatus.PAID)
+        this.paymentStatus = PaymentStatus.valueOf(response.get("status").toString().toUpperCase());
+        this.isPaidOk = this.paymentStatus.equals(PaymentStatus.PAID)
                 && (Integer) response.get("amount") == this.amount;
     }
 }
