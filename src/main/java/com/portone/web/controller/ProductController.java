@@ -1,5 +1,7 @@
 package com.portone.web.controller;
 
+import com.portone.domain.dto.CustomUserDetails;
+import com.portone.domain.entity.CartProduct;
 import com.portone.domain.entity.Product;
 import com.portone.web.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -7,14 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -71,5 +73,31 @@ public class ProductController {
         }
 
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @PostMapping("/api/cart/add")
+    public Map<String, Object> addToCart(@RequestBody Map<String, String> payload,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                         ) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String productName = payload.get("productName");
+            productService.addToCart(customUserDetails.getMember().getUid(), productName);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            log.info(e.getMessage());
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        }
+        response.put("status", "success");
+        return response;
+    }
+
+    @GetMapping("/cart/{uid}")
+    public String cartView(@PathVariable String uid, Model model) {
+        CartProduct cartProduct = productService.findCartProduct(uid);
+        model.addAttribute("cartProduct", cartProduct);
+        return "product/cart";
     }
 }

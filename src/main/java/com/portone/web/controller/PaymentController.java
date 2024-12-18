@@ -5,15 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portone.domain.common.PaymentStatus;
 import com.portone.domain.dto.PaymentDto;
 import com.portone.domain.entity.Payment;
-import com.portone.web.client.PortoneClient;
 import com.portone.web.service.PaymentService;
 import com.portone.web.service.PortoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

@@ -23,6 +23,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final AuthFailureHandler failureHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -48,12 +50,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequest) ->
                         authorizeRequest
-//                                .requestMatchers("/", "/signup", "/login", "/error/**",
-//                                        "/bootstrap.min.css", "/style.css").permitAll()
-//                                .requestMatchers("/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
-//                                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-//                                .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                                .requestMatchers("/", "/signup", "/login", "/error/**",
+                                        "/bootstrap.min.css", "/style.css", "/product/images/**").permitAll()
+                                .requestMatchers("/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+                                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                                .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
@@ -63,6 +64,10 @@ public class SecurityConfig {
                 )
                 .formLogin(loginFail -> loginFail
                         .failureHandler(failureHandler)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .logout(withDefaults());
 
