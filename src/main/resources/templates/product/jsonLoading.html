@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+
+<body>
+<div class="container">
+    <header th:replace="~{fragments/navigator :: navigator}" />
+
+    <form th:action method="post">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary btn-sm" type="submit">제출</button>
+            </div>
+        </div>
+    </form>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+</body>
+</html>

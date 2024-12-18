@@ -46,7 +46,7 @@ public class PaymentController {
                 .uid(UUID.randomUUID().toString())
                 .name(paymentDto.getName())
                 .amount(Integer.parseInt(paymentDto.getAmount()))
-                .status(PaymentStatus.READY)
+                .paymentStatus(PaymentStatus.READY)
                 .isPaidOk(false)
                 .build();
 
