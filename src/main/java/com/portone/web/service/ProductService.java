@@ -80,4 +80,8 @@ public class ProductService {
     public Page<Product> findAll(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
+
+    public Page<Product> searchProductByName(String name, Pageable pageable) {
+        return productRepository.findByNameContaining(name, pageable);
+    }
 }
