@@ -7,8 +7,9 @@ import com.portone.domain.entity.Category;
 import com.portone.domain.entity.Product;
 import com.portone.domain.repository.CategoryRepository;
 import com.portone.domain.repository.ProductRepository;
-import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -77,7 +77,7 @@ public class ProductService {
         }
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }
