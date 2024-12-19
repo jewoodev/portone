@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
         return member.getUsername();
     }
 
-    public String getUid() {
-        return member.getUid();
+    public String getMemberUid() {
+        return member.getMemberUid();
     }
 }

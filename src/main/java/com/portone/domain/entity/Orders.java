@@ -1,7 +1,8 @@
 package com.portone.domain.entity;
 
-import com.portone.domain.common.Role;
+import com.portone.domain.common.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,24 +14,24 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Getter
+@Builder @Getter
+@Table(indexes = @Index(name = "order_status", columnList = "order_status"))
 @Entity
-public class Member {
+public class Orders {
     @Id
+    private String orderUid;
+
     private String memberUid;
 
-    @Column(unique = true)
-    private String username;
+    @Min(1)
+    private int totalAmount;
 
-    private String password;
+    @Enumerated
+    private OrderStatus orderStatus;
 
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime created_at;
 
     @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private LocalDateTime updated_at;
 }

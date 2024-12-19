@@ -18,11 +18,11 @@ import java.util.Map;
 @Getter
 @Entity
 public class Payment {
-    @Id @Column(name = "payment_id")
-    private String uid;
+    @Id
+    private String paymentUid;
 
     @Length(max = 100)
-    private String name;
+    private String paymentName;
 
     @Min(value = 1)
     private int amount;
@@ -35,7 +35,7 @@ public class Payment {
     /* 객체 변환 메서드 */
     public PaymentDto toPaymentDto() {
         return PaymentDto.builder()
-                .name(this.name)
+                .name(this.paymentName)
                 .amount(String.valueOf(this.amount))
                 .build();
     }

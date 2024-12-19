@@ -47,7 +47,7 @@ public class MemberController {
 
         String encodedPwd = passwordEncoder.encode(signupDto.getPassword1());
         Member member = Member.builder()
-                .uid(UUID.randomUUID().toString())
+                .memberUid(UUID.randomUUID().toString())
                 .username(signupDto.getUsername())
                 .password(encodedPwd)
                 .role(Role.USER)

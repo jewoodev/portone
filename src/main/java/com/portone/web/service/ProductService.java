@@ -54,7 +54,7 @@ public class ProductService {
 
             // Product 엔티티 생성
             Product product = Product.builder()
-                    .name(name)
+                    .productName(name)
                     .price(price)
                     .status(ProductStatus.INACTIVE)
                     .description(description)

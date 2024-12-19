@@ -13,13 +13,13 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long> 
 
     Optional<CartProduct> findByMemberUidAndProductName(String memberUid, String productName);
 
-    Optional<CartProduct> findByUid(String uid);
+    Optional<CartProduct> findByCartProductUid(String uid);
 
     List<CartProduct> findByMemberUidOrderByProductNameAsc(String memberUid);
 
-    void deleteByUid(String CartProductUid);
+    void deleteByCartProductUid(String cartProductUid);
 
     @Modifying
-    @Query("UPDATE CartProduct c SET c.quantity = :quantity WHERE c.uid = :uid")
-    void updateQuantityByUid(@Param("uid") String uid, @Param("quantity") int quantity);
+    @Query("UPDATE CartProduct c SET c.quantity = :quantity WHERE c.cartProductUid = :uid")
+    void updateQuantityByCartProductUid(@Param("uid") String uid, @Param("quantity") int quantity);
 }

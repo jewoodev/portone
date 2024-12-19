@@ -1,7 +1,6 @@
 package com.portone.web.controller;
 
 import com.portone.domain.dto.CustomUserDetails;
-import com.portone.domain.entity.CartProduct;
 import com.portone.domain.entity.Product;
 import com.portone.web.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,7 +46,7 @@ public class ProductController {
         }
 
         // 로그인 한 유저 uid 값 -> view
-        if (customUserDetails != null) model.addAttribute("memberUid", customUserDetails.getUid());
+        if (customUserDetails != null) model.addAttribute("memberUid", customUserDetails.getMemberUid());
 
         model.addAttribute("productList", productList);
         model.addAttribute("currentPage", currentPage);

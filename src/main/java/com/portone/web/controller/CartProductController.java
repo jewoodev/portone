@@ -29,7 +29,7 @@ public class CartProductController {
         Map<String, Object> response = new HashMap<>();
         try {
             String productName = payload.get("productName");
-            cartProductService.addToCart(customUserDetails.getMember().getUid(), productName);
+            cartProductService.addToCart(customUserDetails.getMemberUid(), productName);
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             log.info(e.getMessage());
@@ -69,7 +69,7 @@ public class CartProductController {
             cartProductService.updateQuantityMultiple(quantities);
         }
 
-        String memberUid = customUserDetails.getUid();
+        String memberUid = customUserDetails.getMemberUid();
 
         return "redirect:/cart/" + memberUid;
     }
