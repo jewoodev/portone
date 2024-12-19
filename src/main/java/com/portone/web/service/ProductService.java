@@ -88,4 +88,9 @@ public class ProductService {
     public Page<Product> searchProductByName(String name, Pageable pageable) {
         return productRepository.findByNameContaining(name, pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Product findByProductName(String productName) {
+        return productRepository.findByProductName(productName).orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
+    }
 }

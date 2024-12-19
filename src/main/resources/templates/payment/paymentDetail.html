@@ -15,10 +15,10 @@
             <th>결제 성공 여부</th>
         </tr>
         <tr th:object="${payment}">
-            <td th:text="*{uid}"></td>
-            <td th:text="*{name}"></td>
+            <td th:text="*{paymentUid}"></td>
+            <td th:text="*{paymentName}"></td>
             <td th:text="*{amount}"></td>
-            <td th:text="*{status}"></td>
+            <td th:text="*{paymentStatus}"></td>
             <td th:text="*{isPaidOk}"></td>
         </tr>
     </table>

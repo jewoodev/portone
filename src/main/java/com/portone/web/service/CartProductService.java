@@ -42,7 +42,7 @@ public class CartProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<CartProduct> findCartProduct(String MemberUid) {
+    public List<CartProduct> findByMemberUidOrderByProductNameAsc(String MemberUid) {
         List<CartProduct> cartProductList = cartProductRepository.findByMemberUidOrderByProductNameAsc(MemberUid);
         return cartProductList;
     }

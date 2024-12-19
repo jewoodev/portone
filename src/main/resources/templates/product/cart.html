@@ -24,10 +24,10 @@
                 <tr th:each="cartProduct: ${cartProductList}">
                     <td th:text="${cartProduct.productName}"></td>
                     <td>
-                        <input type="number" th:name="${cartProduct.uid}" th:value="${cartProduct.quantity}" />
+                        <input type="number" th:name="${cartProduct.cartProductUid}" th:value="${cartProduct.quantity}" />
                     </td>
                     <td>
-                        <input type="checkbox" name="deleteUids" th:value="${cartProduct.uid}" />
+                        <input type="checkbox" name="deleteUids" th:value="${cartProduct.cartProductUid}" />
                     </td>
                 </tr>
             </form>
@@ -37,7 +37,7 @@
     <div class="button-container text-end">
         <button id="updateButton" type="submit" class="btn btn-primary me-2">장바구니 업데이트</button>
         </form>
-        <form th:action="@{/cart/order}" method="post" class="d-inline">
+        <form th:action="@{/order/new}" method="post" class="d-inline">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input type="hidden" name="memberUid" th:value="${memberUid}" />
             <button type="submit" class="btn btn-success">주문하기</button>

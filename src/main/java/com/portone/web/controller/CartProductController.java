@@ -42,7 +42,7 @@ public class CartProductController {
 
     @GetMapping("/cart/{uid}")
     public String cartView(@PathVariable String uid, Model model) {
-        List<CartProduct> cartProductList = cartProductService.findCartProduct(uid);
+        List<CartProduct> cartProductList = cartProductService.findByMemberUidOrderByProductNameAsc(uid);
         model.addAttribute("cartProductList", cartProductList);
         return "product/cart";
     }
