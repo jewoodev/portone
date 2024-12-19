@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class CartProduct {
     @Id @Column(name = "cart_product_id")
     private String uid;
+
     private String memberUid;
     private String productName;
 
