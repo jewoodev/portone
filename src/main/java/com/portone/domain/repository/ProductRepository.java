@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
+    @Query("SELECT p FROM Product p WHERE p.productName LIKE %:name%")
     Page<Product> findByNameContaining(@Param("name") String name, Pageable pageable);
 
-    Optional<Product> findByName(String name);
+    Optional<Product> findByProductName(String name);
 }

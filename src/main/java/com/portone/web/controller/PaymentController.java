@@ -40,15 +40,15 @@ public class PaymentController {
     @PostMapping("/payment")
     public String payment(@Validated @ModelAttribute PaymentDto paymentDto) {
         Payment payment = Payment.builder()
-                .uid(UUID.randomUUID().toString())
-                .name(paymentDto.getName())
+                .paymentUid(UUID.randomUUID().toString())
+                .paymentName(paymentDto.getName())
                 .amount(Integer.parseInt(paymentDto.getAmount()))
                 .paymentStatus(PaymentStatus.READY)
                 .isPaidOk(false)
                 .build();
 
         paymentService.makePayment(payment);
-        return "redirect:/payment/" + payment.getUid() + "/pay";
+        return "redirect:/payment/" + payment.getPaymentUid() + "/pay";
     }
 
     @GetMapping("/payment/{uid}/pay")
@@ -58,8 +58,8 @@ public class PaymentController {
         String payProps = null;
         try {
             payment = paymentService.findByUid(uid);
-            paymentProps.put("merchant_uid", payment.getUid());
-            paymentProps.put("name", payment.getName());
+            paymentProps.put("merchant_uid", payment.getPaymentUid());
+            paymentProps.put("name", payment.getPaymentName());
             paymentProps.put("amount", String.valueOf(payment.getAmount()));
             paymentProps.put("pg", portonePgProvider);
             payProps = new ObjectMapper().writeValueAsString(paymentProps);

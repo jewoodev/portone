@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Product {
     @Id @Column(unique = true)
-    private String name;
+    private String productName;
 
     @Lob
     private String description;

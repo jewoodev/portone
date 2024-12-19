@@ -18,24 +18,24 @@ public class CartProductService {
     @Transactional
     public String addToCart(String memberUid, String productName) {
         // 상품 검증
-        productRepository.findByName(productName).orElseThrow(() -> new NoSuchElementException("존재하지 않는 옷입니다."));
+        productRepository.findByProductName(productName).orElseThrow(() -> new NoSuchElementException("존재하지 않는 옷입니다."));
 
         Optional<CartProduct> opCartProduct = cartProductRepository.findByMemberUidAndProductName(memberUid, productName);
         String cartProductUid;
         if (opCartProduct.isEmpty()) {
             CartProduct cartProduct = CartProduct.builder()
-                    .uid(UUID.randomUUID().toString())
+                    .cartProductUid(UUID.randomUUID().toString())
                     .productName(productName)
                     .memberUid(memberUid)
                     .quantity(1)
                     .build();
 
-            cartProductUid = cartProductRepository.save(cartProduct).getUid();
+            cartProductUid = cartProductRepository.save(cartProduct).getCartProductUid();
         }
         else {
             CartProduct cartProduct = opCartProduct.get();
             cartProduct.increaseQuantity();
-            cartProductUid = cartProduct.getUid();
+            cartProductUid = cartProduct.getCartProductUid();
         }
 
         return cartProductUid;
@@ -50,14 +50,14 @@ public class CartProductService {
     @Transactional
     public void deleteByUids(List<String> cartProductUids) {
         for (String cartProductUid : cartProductUids) {
-            cartProductRepository.deleteByUid(cartProductUid);
+            cartProductRepository.deleteByCartProductUid(cartProductUid);
         }
     }
 
     @Transactional
     public void updateQuantityMultiple(Map<String, String> quantities) {
         for (Map.Entry<String, String> entry : quantities.entrySet()) {
-            cartProductRepository.updateQuantityByUid(entry.getKey(), Integer.parseInt(entry.getValue()));
+            cartProductRepository.updateQuantityByCartProductUid(entry.getKey(), Integer.parseInt(entry.getValue()));
         }
     }
 }

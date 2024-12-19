@@ -11,9 +11,8 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Entity
 public class Category {
-    @Column(name = "category_id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long categoryUid;
 
     @Length(max = 100)
     @Column(unique = true)

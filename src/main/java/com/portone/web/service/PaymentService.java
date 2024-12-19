@@ -16,7 +16,7 @@ public class PaymentService {
 
     public String makePayment(Payment payment) {
         paymentRepository.save(payment);
-        return payment.getName();
+        return payment.getPaymentName();
     }
 
     public Payment findByUid(String uid) {
