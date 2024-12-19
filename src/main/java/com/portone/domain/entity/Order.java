@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder @Getter
-@Table(indexes = @Index(name = "order_status", columnList = "order_status"))
+@Table(name = "orders", indexes = @Index(name = "order_status", columnList = "order_status"))
 @Entity
-public class Orders {
+public class Order {
     @Id
     private String orderUid;
 
@@ -26,7 +26,7 @@ public class Orders {
     @Min(1)
     private int totalAmount;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @CreatedDate
@@ -34,4 +34,8 @@ public class Orders {
 
     @LastModifiedDate
     private LocalDateTime updated_at;
+
+    public void settingTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 }
