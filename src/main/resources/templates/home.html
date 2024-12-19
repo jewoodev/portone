@@ -110,7 +110,8 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                [csrfHeader]: csrfToken // CSRF 토큰 추가
+                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                "X-Requested-With": "XMLHttpRequest" // AJAX 요청임을 명시
             },
             body: JSON.stringify(jsonData)
         })
