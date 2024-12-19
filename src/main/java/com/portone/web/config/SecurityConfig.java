@@ -52,7 +52,7 @@ public class SecurityConfig {
                         authorizeRequest
                                 .requestMatchers("/", "/signup", "/login", "/error/**",
                                         "/bootstrap.min.css", "/style.css", "/product/images/**").permitAll()
-                                .requestMatchers("/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+                                .requestMatchers("/products/**","/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
