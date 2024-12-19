@@ -117,7 +117,9 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public CartProduct findCartProduct(String cartProductUid) {
-        return cartProductRepository.findByUid(cartProductUid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 장바구니를 요청하셨습니다."));
+    public List<CartProduct> findCartProduct(String MemberUid) {
+        List<CartProduct> cartProductList = cartProductRepository.findByMemberUidOrderByProductNameAsc(MemberUid);
+        if (cartProductList.isEmpty()) throw new NoSuchElementException("장바구니에 담은 상품이 없습니다.");
+        return cartProductList;
     }
 }

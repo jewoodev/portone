@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -28,6 +29,7 @@ public class ProductController {
     public String main(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String query,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             Model model) {
         Pageable pageable = PageRequest.of(page, 9);
         Page<Product> productList;
@@ -48,6 +50,9 @@ public class ProductController {
         if (endPage - startPage < pageRange - 1) {
             startPage = Math.max(0, endPage - pageRange + 1);
         }
+
+        // 로그인 한 유저 uid 값 -> view
+        if (customUserDetails != null) model.addAttribute("memberUid", customUserDetails.getUid());
 
         model.addAttribute("productList", productList);
         model.addAttribute("currentPage", currentPage);
@@ -96,8 +101,8 @@ public class ProductController {
 
     @GetMapping("/cart/{uid}")
     public String cartView(@PathVariable String uid, Model model) {
-        CartProduct cartProduct = productService.findCartProduct(uid);
-        model.addAttribute("cartProduct", cartProduct);
+        List<CartProduct> cartProductList = productService.findCartProduct(uid);
+        model.addAttribute("cartProductList", cartProductList);
         return "product/cart";
     }
 }
