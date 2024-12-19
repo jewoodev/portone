@@ -26,7 +26,6 @@ import java.util.*;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final CartProductRepository cartProductRepository;
 
     private final String staticDir = "src/main/resources/static/product/";
 
@@ -88,38 +87,5 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<Product> searchProductByName(String name, Pageable pageable) {
         return productRepository.findByNameContaining(name, pageable);
-    }
-
-    @Transactional
-    public String addToCart(String memberUid, String productName) {
-        // 상품 검증
-        productRepository.findByName(productName).orElseThrow(() -> new NoSuchElementException("존재하지 않는 옷입니다."));
-
-        Optional<CartProduct> opCartProduct = cartProductRepository.findByMemberUidAndProductName(memberUid, productName);
-        String cartProductUid;
-        if (opCartProduct.isEmpty()) {
-            CartProduct cartProduct = CartProduct.builder()
-                    .uid(UUID.randomUUID().toString())
-                    .productName(productName)
-                    .memberUid(memberUid)
-                    .quantity(1)
-                    .build();
-
-            cartProductUid = cartProductRepository.save(cartProduct).getUid();
-        }
-        else {
-            CartProduct cartProduct = opCartProduct.get();
-            cartProduct.increaseQuantity();
-            cartProductUid = cartProduct.getUid();
-        }
-
-        return cartProductUid;
-    }
-
-    @Transactional(readOnly = true)
-    public List<CartProduct> findCartProduct(String MemberUid) {
-        List<CartProduct> cartProductList = cartProductRepository.findByMemberUidOrderByProductNameAsc(MemberUid);
-        if (cartProductList.isEmpty()) throw new NoSuchElementException("장바구니에 담은 상품이 없습니다.");
-        return cartProductList;
     }
 }

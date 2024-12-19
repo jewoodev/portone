@@ -79,30 +79,4 @@ public class ProductController {
 
         return "redirect:/";
     }
-
-    @ResponseBody
-    @PostMapping("/api/cart/add")
-    public Map<String, Object> addToCart(@RequestBody Map<String, String> payload,
-                                         @AuthenticationPrincipal CustomUserDetails customUserDetails
-                                         ) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            String productName = payload.get("productName");
-            productService.addToCart(customUserDetails.getMember().getUid(), productName);
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            log.info(e.getMessage());
-            response.put("status", "error");
-            response.put("message", e.getMessage());
-        }
-        response.put("status", "success");
-        return response;
-    }
-
-    @GetMapping("/cart/{uid}")
-    public String cartView(@PathVariable String uid, Model model) {
-        List<CartProduct> cartProductList = productService.findCartProduct(uid);
-        model.addAttribute("cartProductList", cartProductList);
-        return "product/cart";
-    }
 }
