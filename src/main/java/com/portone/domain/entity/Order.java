@@ -3,7 +3,6 @@ package com.portone.domain.entity;
 import com.portone.domain.common.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder @Getter
+@Getter
 @Table(name = "orders", indexes = @Index(name = "order_status", columnList = "order_status"))
 @Entity
 public class Order {
@@ -22,6 +20,8 @@ public class Order {
     private String orderUid;
 
     private String memberUid;
+
+    private String name;
 
     @Min(1)
     private int totalAmount;
@@ -35,7 +35,27 @@ public class Order {
     @LastModifiedDate
     private LocalDateTime updated_at;
 
+    @Builder
+    private Order(String orderUid, String memberUid, int totalAmount, OrderStatus orderStatus, LocalDateTime created_at, LocalDateTime updated_at) {
+        this.orderUid = orderUid;
+        this.memberUid = memberUid;
+        this.totalAmount = totalAmount;
+        this.orderStatus = orderStatus;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
     public void settingTotalAmount(int totalAmount) {
         this.totalAmount = totalAmount;
+    }
+    public void settingName(String name) {
+        this.name = name;
+    }
+
+    public boolean canPay() {
+        if (this.orderStatus == OrderStatus.REQUESTED || this.orderStatus == OrderStatus.FAILED_PAYMENT) {
+            return true;
+        }
+        return false;
     }
 }
