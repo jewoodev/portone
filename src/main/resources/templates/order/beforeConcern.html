@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+
+<body>
+<div class="container">
+    <header th:replace="~{fragments/navigator :: navigator}" />
+
+    <h2>확인과정</h2>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <div th:text="${order.getName()}"></div>
+    <div th:text="${order.getTotalAmount()}"></div>
+    <div th:text="${order.getOrderStatus()}"></div>
+    <h4>주문 건을 결제하시겠습니까?</h4>
+    <form th:action="@{/order/{orderUid}/pay(orderUid=${order.getOrderUid()})}" method="POST">
+        <button type="submit">결제하기</button>
+    </form>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+</body>
+</html>

@@ -5,7 +5,9 @@ import com.portone.domain.entity.CartProduct;
 import com.portone.domain.entity.Order;
 import com.portone.domain.entity.OrderedProduct;
 import com.portone.domain.entity.Product;
-import com.portone.domain.repository.OrdersRepository;
+import com.portone.domain.repository.CartProductRepository;
+import com.portone.domain.repository.OrderRepository;
+import com.portone.domain.repository.OrderedProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,13 +22,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class OrderService {
-    private final OrdersRepository ordersRepository;
+    private final OrderRepository orderRepository;
+    private final CartProductRepository cartProductRepository;
     private final CartProductService cartProductService;
     private final ProductService productService;
     private final OrderedProductService orderedProductService;
+    private final OrderedProductRepository orderedProductRepository;
 
     public Order findByOrderUid(String orderUid) {
-        return ordersRepository.findByOrderUid(orderUid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문입니다."));
+        return orderRepository.findByOrderUid(orderUid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문입니다."));
     }
 
     /**
@@ -34,7 +38,7 @@ public class OrderService {
      */
     @Transactional
     public Order createFromCart(String memberUid) {
-        List<CartProduct> cartProductList = cartProductService.findByMemberUidOrderByProductNameAsc(memberUid);
+        List<CartProduct> cartProductList = cartProductRepository.findByMemberUidOrderByProductNameAsc(memberUid);
         List<String> cartProductUids = new ArrayList<>(); // 주문한 상품은 일괄적으로 카트에서 삭제하기 위한 리스트
         int totalAmount = 0;
 
@@ -64,9 +68,12 @@ public class OrderService {
             cartProductUids.add(cartProduct.getCartProductUid());
         }
 
+        // 주문 이름 생성 후 Order에 삽입
+        order.settingName(this.makeName(orderedProducts));
+
         // 연산된 totalAmount를 Order에 삽입
         order.settingTotalAmount(totalAmount);
-        ordersRepository.save(order); // 이 후 Create
+        orderRepository.save(order); // 이 후 Create
 
         orderedProductService.bulkCreateOrderedProduct(orderedProducts);
 
@@ -74,5 +81,18 @@ public class OrderService {
         cartProductService.deleteByUids(cartProductUids);
 
         return order;
+    }
+
+    public String nameOfOrder(Order order) {
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findByOrderUid(order.getOrderUid());
+        return makeName(orderedProducts);
+    }
+
+    public String makeName(List<OrderedProduct> orderedProducts) {
+        String firstProductName = orderedProducts.get(0).getProductName();
+        int size = orderedProducts.size();
+        if (size < 2) return firstProductName;
+
+        return String.format("%s 외 %d건", firstProductName, size);
     }
 }

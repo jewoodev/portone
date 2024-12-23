@@ -8,7 +8,14 @@
 
     <h2>결제</h2>
 
-    <div th:text="${order}"></div>
+    <div th:text="${payment.getId()}"></div>
+    <br/>
+    <div th:text="${payment.getDesiredAmount()}"></div>
+    <br/>
+    <div th:text="${payment.getPayMethod()}"></div>
+    <br/>
+    <div th:text="${payment.getBuyerName()}"></div>
+    <br/>
 
     <div th:replace="~{fragments/footer :: footer}" />
 </div> <!-- /container -->
