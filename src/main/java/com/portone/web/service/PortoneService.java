@@ -1,5 +1,6 @@
 package com.portone.web.service;
 
+import com.portone.domain.entity.OrderPayment;
 import com.portone.domain.entity.Payment;
 import com.portone.web.client.PortoneClient;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,6 @@ public class PortoneService {
     public Map<String, Object> getPaymentDetails(String merchantUid) {
         String accessToken = getAccessToken();
         Map<String, Object> paymentDetails = portoneClient.getPaymentDetails(merchantUid, "Bearer " + accessToken);
-        log.info("PaymentDetails: {}", paymentDetails);
         return paymentDetails;
     }
 
@@ -57,5 +57,10 @@ public class PortoneService {
         Map<String, Object> paymentData = this.getPaymentDetails(uid);
         payment.check(paymentData);
         return payment;
+    }
+
+    @Transactional
+    public void updateOrderPayment(OrderPayment orderPayment) {
+        orderPayment.update(orderPayment);
     }
 }
