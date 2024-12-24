@@ -1,6 +1,6 @@
 package com.portone.web.service;
 
-import com.portone.domain.entity.AbstractPortonePayment;
+import com.portone.domain.entity.OrderPayment;
 import com.portone.web.client.PortoneClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class PortoneService {
     private final PortoneClient portoneClient;
-    private final PaymentService paymentService;
+    private final OrderService orderService;
     private final OrderPaymentService orderPaymentService;
 
     @Value("${portone.pg.provider}")
@@ -52,12 +52,14 @@ public class PortoneService {
 
     // 결제 데이터 검증
     @Transactional
-    public Map<String, Object> checkPayment(String uid) {
-        AbstractPortonePayment payment = orderPaymentService.findByOrderPaymentId(uid);
-        Map<String, Object> paymentData = this.getPaymentDetails(uid);
-        log.info("paymentData is {}", paymentData);
-        payment.check(paymentData);
-        payment.update(paymentData);
+    public Map<String, Object> checkPayment(String paymentUid) {
+        OrderPayment payment = orderPaymentService.findByOrderPaymentId(paymentUid);
+        Map<String, Object> paymentData = this.getPaymentDetails(paymentUid);
+        payment.check(paymentData); // 검증 후
+        payment.update(paymentData); // 결제 정보를 업데이트
+
+        orderService.updateWhenPaidOk(payment.getOrderUid()); // + 주믄 정보 업데이트
+
         return paymentData;
     }
 //    @Transactional

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+
+<body>
+<div class="container">
+    <header th:replace="~{fragments/navigator :: navigator}" />
+
+    <h2>주문내역</h2>
+    <ul>
+        <li th:text="${formattedAmount} + '원'"></li>
+        <li th:text="${order.getOrderStatus().getDescription()}"></li>
+    </ul>
+
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            <th>주문상품명</th>
+            <th>상품가격</th>
+            <th>주문수량</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderedProduct : ${orderedProducts}">
+            <td th:text="${orderedProduct.getProductName()}"></td>
+            <td th:text="${orderedProduct.getPrice()}"></td>
+            <td th:text="${orderedProduct.getQuantity()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+</body>
+</html>

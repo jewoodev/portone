@@ -58,4 +58,11 @@ public class Order {
         }
         return false;
     }
+
+    /**
+     * 결제가 성공적으로 처리되면 주문 상태를 결제완료 상태로 업데이트한다.
+     */
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }

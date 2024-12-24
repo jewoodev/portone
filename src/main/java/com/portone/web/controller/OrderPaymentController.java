@@ -9,12 +9,14 @@ import com.portone.web.service.OrderService;
 import com.portone.web.service.PortoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -64,13 +66,15 @@ public class OrderPaymentController {
     }
 
     @PatchMapping("/order/{ordersUid}/check/{paymentUid}")
-    public String orderCheck(@PathVariable String paymentUid,
-                             Model model) {
+    public ResponseEntity<Void> orderCheck(@PathVariable String ordersUid,
+                                     @PathVariable String paymentUid,
+                                     Model model) {
         try {
             portoneService.checkPayment(paymentUid);
         } catch (NoSuchElementException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/order/" + paymentUid + "/detail";
+        URI redirectUri = URI.create("/order/" + ordersUid);
+        return ResponseEntity.ok().header("Location", redirectUri.toString()).build();
     }
 }

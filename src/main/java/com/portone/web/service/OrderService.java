@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -94,5 +91,10 @@ public class OrderService {
         if (size < 2) return firstProductName;
 
         return String.format("%s 외 %d건", firstProductName, size);
+    }
+
+    public void updateWhenPaidOk(String orderUid) {
+        Order order = findByOrderUid(orderUid);
+        order.updateStatus(OrderStatus.PAID);
     }
 }

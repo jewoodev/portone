@@ -15,32 +15,44 @@
     <script th:inline="javascript">
         (function() {
             const IMP = window.IMP;
-            IMP.init(/*[[${portoneShopId}]]*/);
+            IMP.init([[${portoneShopId}]]);
 
             const merchant_uid = "merchant_" + new Date().getTime();
 
             const csrfToken = document.querySelector('meta[name="_csrf"]').content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-            let props = /*[[${payProps}]]*/;
+            let props = [[${payProps}]];
             props = JSON.parse(props);
 
-            IMP.request_pay(props, function(response) {
-                console.log(response)
+            IMP.request_pay(props, async function(response) {
                 if (response.success) {
-                    console.log("response is success");
-                    fetch(/*[[${verifyUrl}]]*/, {
-                        method: 'PATCH',
-                        headers: {
-                        [csrfHeader]: csrfToken, // CSRF 토큰 추가
-                        'Content-Type': 'application/json'
-                        },
-                        body: ""
-                    })
-                    .catch(error => {
+                    try {
+                        const fetchResponse = await fetch([[${verifyUrl}]], {
+                            method: 'PATCH',
+                            headers: {
+                                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                                'Content-Type': 'application/json'
+                            },
+                            body: ""
+                        });
+
+                        if (fetchResponse.ok) {
+                            const location = fetchResponse.headers.get('Location');
+                            if (location) {
+                                window.location.href = location;
+                            } else {
+                                console.error("결제가 완료되었지만 이동할 URL이 제공되지 않았습니다.");
+                                alert("서버 통신 중 오류가 발생했습니다.");
+                            }
+                        } else {
+                            console.error("PATCH 요청 실패:", fetchResponse.statusText);
+                            alert("서버 통신 중 오류가 발생했습니다.");
+                        }
+                    } catch (error) {
                         console.error("Fetch Error:", error);
                         alert("서버 통신 중 문제가 발생했습니다.");
-                    });
+                    }
                 } else {
                     alert("결제가 실패했습니다. 다시 시도해주세요.");
                 }
