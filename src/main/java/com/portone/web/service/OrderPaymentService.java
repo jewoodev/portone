@@ -24,4 +24,8 @@ public class OrderPaymentService {
         orderPaymentRepository.save(orderPayment);
         return orderPayment;
     }
+
+    public OrderPayment findByOrderPaymentId(String paymentUid) {
+        return orderPaymentRepository.findByPaymentUid(paymentUid).orElseThrow(() -> new NoSuchElementException("존재하지 않는 주문입니다."));
+    }
 }

@@ -8,14 +8,45 @@
 
     <h2>결제</h2>
 
-    <div th:text="${payment.getId()}"></div>
-    <br/>
-    <div th:text="${payment.getDesiredAmount()}"></div>
-    <br/>
-    <div th:text="${payment.getPayMethod()}"></div>
-    <br/>
-    <div th:text="${payment.getBuyerName()}"></div>
-    <br/>
+    <meta name="_csrf" th:content="${_csrf.token}"/> <!-- CSRF 토큰 -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 -->
+
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script th:inline="javascript">
+        (function() {
+            const IMP = window.IMP;
+            IMP.init(/*[[${portoneShopId}]]*/);
+
+            const merchant_uid = "merchant_" + new Date().getTime();
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            let props = /*[[${payProps}]]*/;
+            props = JSON.parse(props);
+
+            IMP.request_pay(props, function(response) {
+                console.log(response)
+                if (response.success) {
+                    console.log("response is success");
+                    fetch(/*[[${verifyUrl}]]*/, {
+                        method: 'PATCH',
+                        headers: {
+                        [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                        'Content-Type': 'application/json'
+                        },
+                        body: ""
+                    })
+                    .catch(error => {
+                        console.error("Fetch Error:", error);
+                        alert("서버 통신 중 문제가 발생했습니다.");
+                    });
+                } else {
+                    alert("결제가 실패했습니다. 다시 시도해주세요.");
+                }
+            });
+        })();
+    </script>
 
     <div th:replace="~{fragments/footer :: footer}" />
 </div> <!-- /container -->

@@ -1,7 +1,6 @@
 package com.portone.web.service;
 
-import com.portone.domain.entity.OrderPayment;
-import com.portone.domain.entity.Payment;
+import com.portone.domain.entity.AbstractPortonePayment;
 import com.portone.web.client.PortoneClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import java.util.Map;
 public class PortoneService {
     private final PortoneClient portoneClient;
     private final PaymentService paymentService;
+    private final OrderPaymentService orderPaymentService;
 
     @Value("${portone.pg.provider}")
     private String pgProvider;
@@ -52,15 +52,25 @@ public class PortoneService {
 
     // 결제 데이터 검증
     @Transactional
-    public Payment checkPayment(String uid) {
-        Payment payment = paymentService.findByUid(uid);
+    public Map<String, Object> checkPayment(String uid) {
+        AbstractPortonePayment payment = orderPaymentService.findByOrderPaymentId(uid);
         Map<String, Object> paymentData = this.getPaymentDetails(uid);
+        log.info("paymentData is {}", paymentData);
         payment.check(paymentData);
-        return payment;
+        payment.update(paymentData);
+        return paymentData;
     }
+//    @Transactional
+//    public Payment checkPayment(String uid) {
+//        Payment payment = paymentService.findByUid(uid);
+//        Map<String, Object> paymentData = this.getPaymentDetails(uid);
+//        payment.check(paymentData);
+//        return payment;
+//    }
 
-    @Transactional
-    public void updateOrderPayment(OrderPayment orderPayment) {
-        orderPayment.update(orderPayment);
-    }
+//    @Transactional
+//    public void updateOrderPayment(Map<String, Object> paymentData) {
+//        AbstractPortonePayment payment = (AbstractPortonePayment) paymentData.get("paymentObject");
+//        payment.update(payment, paymentData);
+//    }
 }
