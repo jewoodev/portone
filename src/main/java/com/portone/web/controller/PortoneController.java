@@ -47,6 +47,7 @@ public class PortoneController {
                     requestBody.append(line);
                 }
                 Map<String, Object> data = new ObjectMapper().readValue(requestBody.toString(), Map.class);
+                log.info("포트원에서 넘어온 데이터: {}", data);
                 merchantUid = (String) data.get("merchant_uid");
             } catch (IOException e) {
                 log.info("요청 바디 파싱 에러");

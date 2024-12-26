@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Controller
@@ -69,11 +68,11 @@ public class OrderPaymentController {
     public ResponseEntity<Void> orderCheck(@PathVariable String ordersUid,
                                      @PathVariable String paymentUid,
                                      Model model) {
-        try {
-            portoneService.checkPayment(paymentUid);
-        } catch (NoSuchElementException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-        }
+//        try {
+//            portoneService.checkPayment(paymentUid);
+//        } catch (NoSuchElementException e) {
+//            model.addAttribute("errorMessage", e.getMessage());
+//        }
         URI redirectUri = URI.create("/order/" + ordersUid);
         return ResponseEntity.ok().header("Location", redirectUri.toString()).build();
     }
