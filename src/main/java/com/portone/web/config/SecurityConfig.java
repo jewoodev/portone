@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -47,12 +48,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/webhook"))
+                )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequest) ->
                         authorizeRequest
                                 .requestMatchers("/", "/signup", "/login", "/error/**",
-                                        "/bootstrap.min.css", "/style.css", "/product/images/**", "/order/**").permitAll()
+                                        "/bootstrap.min.css", "/style.css", "/product/images/**", "/webhook").permitAll()
                                 .requestMatchers("/products/**","/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
