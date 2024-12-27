@@ -40,10 +40,9 @@ public class MemberController {
             @Validated @ModelAttribute SignupDto signupDto,
             BindingResult result
     ) {
+        signUpValidator.validate(signupDto, result);
         if (result.hasErrors())
             return "members/signup"; // 문제가 있는 경우는 다시 signup page
-        signUpValidator.validate(signupDto, result);
-
 
         String encodedPwd = passwordEncoder.encode(signupDto.getPassword1());
         Member member = Member.builder()
