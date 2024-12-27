@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -50,8 +49,6 @@ public class MemberController {
                 .username(signupDto.getUsername())
                 .password(encodedPwd)
                 .role(Role.USER)
-                .createDate(LocalDateTime.now())
-                .modifiedDate(LocalDateTime.now())
                 .build();
 
         memberService.signup(member);

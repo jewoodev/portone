@@ -43,8 +43,6 @@ public class OrderService {
                 .orderUid(UUID.randomUUID().toString())
                 .memberUid(memberUid)
                 .orderStatus(OrderStatus.REQUESTED)
-                .created_at(LocalDateTime.now())
-                .updated_at(LocalDateTime.now())
                 .build();
 
         List<OrderedProduct> orderedProducts = new ArrayList<>();
@@ -58,8 +56,6 @@ public class OrderService {
                     .productName(cartProduct.getProductName())
                     .price(productPrice)
                     .quantity(cartProduct.getQuantity())
-                    .created_at(LocalDateTime.now())
-                    .updated_at(LocalDateTime.now())
                     .build();
             orderedProducts.add(orderedProduct);
             cartProductUids.add(cartProduct.getCartProductUid());

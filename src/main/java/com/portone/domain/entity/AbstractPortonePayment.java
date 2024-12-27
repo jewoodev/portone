@@ -17,7 +17,7 @@ import static com.portone.domain.common.PayStatus.PAID;
 @NoArgsConstructor
 @Getter
 @MappedSuperclass
-public abstract class AbstractPortonePayment {
+public abstract class AbstractPortonePayment extends BaseEntity {
     @Id
     private String paymentUid;
 
@@ -37,7 +37,7 @@ public abstract class AbstractPortonePayment {
 
     private boolean isPaidOk;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "JSON")
     @Convert(converter = JsonConverter.class)
     private Map<String, Object> meta;
 

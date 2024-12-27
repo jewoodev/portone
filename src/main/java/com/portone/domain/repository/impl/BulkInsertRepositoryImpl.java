@@ -1,6 +1,5 @@
 package com.portone.domain.repository.impl;
 
-import com.portone.domain.entity.OrderedProduct;
 import com.portone.domain.repository.BulkInsertRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

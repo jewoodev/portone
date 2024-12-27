@@ -8,9 +8,6 @@
 
         <a href="/payment">새 결제 만들기</a>
 
-        <meta name="_csrf" th:content="${_csrf.token}" />
-        <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-
         <div class="row">
             <div th:each="product : ${productList}" class="col-sm-6 col-lg-4">
                 <div class="card">
@@ -91,9 +88,7 @@
         <div th:replace="~{fragments/footer :: footer}" />
     </div> <!-- /container -->
 </body>
-</html>
-
-<script>
+<script th:inline="javascript">
     function addToCart(event) {
         event.preventDefault(); // 링크 클릭의 기본 동작 방지
 
@@ -103,14 +98,11 @@
         // JSON 형식으로 데이터 준비
         const jsonData = { productName: productName };
 
-        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
         fetch("/api/cart/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                [[${_csrf.headerName}]]: [[${_csrf.token}]], // CSRF 토큰 추가
                 "X-Requested-With": "XMLHttpRequest" // AJAX 요청임을 명시
             },
             body: JSON.stringify(jsonData)
@@ -129,3 +121,5 @@
         });
     }
 </script>
+</html>
+

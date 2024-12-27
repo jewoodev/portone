@@ -8,8 +8,6 @@
 
     <h2>결제</h2>
 
-    <meta name="_csrf" th:content="${_csrf.token}"/> <!-- CSRF 토큰 -->
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 -->
 
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script th:inline="javascript">
@@ -18,9 +16,6 @@
             IMP.init([[${portoneShopId}]]);
 
             const merchant_uid = "merchant_" + new Date().getTime();
-
-            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
             let props = [[${payProps}]];
             props = JSON.parse(props);
@@ -31,7 +26,7 @@
                         const fetchResponse = await fetch([[${verifyUrl}]], {
                             method: 'PATCH',
                             headers: {
-                                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                                [[${_csrf.token}]]: [[${_csrf.headerName}]], // CSRF 토큰 추가
                                 'Content-Type': 'application/json'
                             },
                             body: ""

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
         uniqueConstraints = @UniqueConstraint(columnNames = {"memberUid, productName"})
 )
 @Entity
-public class CartProduct {
+public class CartProduct extends BaseEntity {
     @Id
     private String cartProductUid;
 

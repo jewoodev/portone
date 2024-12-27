@@ -12,11 +12,11 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 -->
 
     <script th:inline="javascript">
-        let props = /*[[${payProps}]]*/;
+        let props = [[${payProps}]];
         props = JSON.parse(props);
 
-        const verifyUrl = /*[[${verifyUrl}]]*/;
-        const portoneShopId = /*[[${portoneShopId}]]*/;
+        const verifyUrl = [[${verifyUrl}]];
+        const portoneShopId = [[${portoneShopId}]];
     </script>
 
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
